@@ -1,0 +1,20 @@
+name: Sync Fork
+on:
+  schedule:
+    - cron: '0 */6 * * *'           # 每6小时一次，按需要改
+  workflow_dispatch:                # 允许手动触发
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+      - run: |
+          git remote add upstream https://github.com/原主/repo.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main
+          git push origin main
